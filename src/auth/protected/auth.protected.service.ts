@@ -8,6 +8,7 @@ export class ProtectedAuthService {
   constructor(@InjectModel(Auth.name) private authModel: Model<AuthDocument>) {}
 
   async getAllUsers() {
-    return this.authModel.find();
+    const users = await this.authModel.find();
+    return users;
   }
 }
