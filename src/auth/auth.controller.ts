@@ -29,7 +29,7 @@ export class AuthController {
   @Get('user')
   async findUser(@Body() data: { email: string; password: string }) {
     try {
-      const user = await this.authService.findUser(data);
+      const user = await this.authService.login(data);
       return { user, message: ' user' };
     } catch (error: unknown) {
       if (error instanceof Error) {

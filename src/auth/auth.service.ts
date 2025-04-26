@@ -53,7 +53,7 @@ export class AuthService {
     return bcrypt.compare(plainPass, hashedPass);
   }
 
-  async findUser(data: { email: string; password: string }) {
+  async login(data: { email: string; password: string }) {
     const user = await this.authModel.findOne({ email: data.email }).exec();
 
     if (!user) {
@@ -80,5 +80,9 @@ export class AuthService {
       },
       token,
     };
+  }
+
+  async findUser(email: string) {
+    return this.authModel.findOne({ email });
   }
 }
