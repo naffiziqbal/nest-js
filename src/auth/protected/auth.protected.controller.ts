@@ -4,6 +4,7 @@ import {
   Get,
   UseGuards,
 } from '@nestjs/common';
+import { User } from 'src/decorators/user.decorators';
 import { JwtAuthGuard } from '../guards/auth.jwt-gaurds';
 import { ProtectedAuthService } from './auth.protected.service';
 
@@ -18,5 +19,11 @@ export class ProtectedAuthController {
       throw new BadRequestException('No Data Found');
     }
     return users;
+  }
+
+  @Get('user')
+  findOne(@User() user: { id: string; email: string }) {
+    console.log(user);
+    return user;
   }
 }
