@@ -35,7 +35,7 @@ export class AuthController {
       if (error instanceof Error) {
         if (error.message === 'user not found') {
           throw new NotFoundException('User Not found');
-        } else if (error.message === 'password not ') {
+        } else if (error.message === 'password not matched') {
           throw new BadRequestException('Invalid password');
         }
         throw error;

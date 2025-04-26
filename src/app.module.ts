@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { UserModule } from './user/user.module';
 
-import { config } from 'dotenv';
 import { AppController } from './app.controller';
-config();
+import { AuthController } from './auth/auth.controller';
+import { logger } from './middleware/auth/auth.middleware';
 
 @Module({
   imports: [
@@ -17,4 +17,8 @@ config();
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(logger).forRoutes(AuthController);
+  }
+}

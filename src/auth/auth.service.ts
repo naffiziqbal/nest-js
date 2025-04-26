@@ -1,12 +1,16 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Auth, AuthDocument } from './auth.schema';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable({})
 export class AuthService {
-  constructor(@InjectModel(Auth.name) private authModel: Model<AuthDocument>) {}
+  constructor(
+    @InjectModel(Auth.name) private authModel: Model<AuthDocument>,
+    private jwtService: JwtService,
+  ) {}
 
   async hashPassword(password: string) {
     const salt = await bcrypt.genSalt(10);
@@ -62,8 +66,19 @@ export class AuthService {
     );
 
     if (!matchedUser) {
-      throw new Error('password not matched');
+      throw new UnauthorizedException('Wrong Password');
     }
-    return user;
+
+    const payload = { sub: user?._id, email: user?.email };
+    const token = this.jwtService.sign(payload);
+    return {
+      message: 'Login successful',
+      user: {
+        _id: user?._id,
+        email: user?.email,
+        name: user?.email,
+      },
+      token,
+    };
   }
 }
